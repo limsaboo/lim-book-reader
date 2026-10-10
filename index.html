@@ -37,7 +37,7 @@ ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
 #read p{margin:0 0 1em}
 #read .q{color:#0A6B2A}
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--dpur);display:flex;gap:6px;padding:8px 10px}
-.bar button{flex:1;background:#FFD400;color:#111;border:0;border-radius:10px;font:800 15px "Malgun Gothic",sans-serif;min-height:46px}
+.bar button{flex:1 1 0;min-width:0;white-space:nowrap;background:#FFD400;color:#111;border:0;border-radius:10px;font:800 14px "Malgun Gothic",sans-serif;min-height:46px;padding:0 2px}
 .bar button:disabled{background:#999;color:#eee}
 .foot{margin-top:18px;font-size:14px}
 .foot a{color:var(--blu)}
@@ -47,7 +47,7 @@ ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
 <header><h1 id="ttl">전자책 원고실</h1><button id="hb" style="display:none">목록</button></header>
 <main id="app"></main>
 <div class="bar" id="bar" style="display:none">
-<button id="bPrev">◀ 이전</button><button id="bA1">글자 −</button><button id="bA2">글자 +</button><button id="bLH">줄간격</button><button id="bNext">다음 ▶</button>
+<button id="bPrev">◀이전</button><button id="bA1">가−</button><button id="bA2">가+</button><button id="bLH">줄간격</button><button id="bNext">다음▶</button>
 </div>
 <script>
 (function(){
