@@ -1,9 +1,8 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-  <link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#38204e">
 <link rel="icon" type="image/png" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -13,19 +12,194 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>전자책 원고실</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f7f3fa;color:#241832;margin:0;line-height:1.7}
-header{background:#38204e;color:white;padding:28px 20px}
-main{max-width:700px;margin:20px auto;padding:0 16px}
-section{background:white;border-radius:14px;padding:20px;margin:16px 0}
-a{display:block;background:#6535a6;color:white;text-decoration:none;text-align:center;padding:14px;border-radius:9px;margin-top:12px}
+:root{--ink:#111;--pur:#6535A6;--dpur:#38204E;--grn:#00A33B;--red:#E00000;--org:#FF6A00;--blu:#0057FF;--bg:#FFFBEA}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.9 "Malgun Gothic","Noto Sans KR",sans-serif}
+header{background:var(--dpur);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px}
+header h1{font-size:20px;margin:0;line-height:1.5;flex:1}
+header button{background:#FFD400;color:#111;border:0;border-radius:10px;font:800 15px "Malgun Gothic",sans-serif;padding:10px 12px;min-height:44px}
+main{max-width:720px;margin:0 auto;padding:14px 16px 90px}
+.card{background:#fff;border:3px solid var(--pur);border-radius:14px;padding:16px;margin:0 0 16px}
+.card h2{margin:0 0 8px;font-size:19px;line-height:1.6;color:var(--blu)}
+.card p{margin:6px 0}
+.btn{display:block;width:100%;background:var(--pur);color:#fff;border:0;border-radius:12px;padding:14px;font:800 17px "Malgun Gothic",sans-serif;margin-top:12px;min-height:50px;text-align:center;text-decoration:none}
+.btn.g{background:var(--grn)}.btn.r{background:var(--red)}.btn.o{background:var(--org)}
+.item{display:block;width:100%;text-align:left;background:#fff;border:3px solid var(--grn);border-radius:12px;padding:12px 14px;margin:10px 0;font:800 17px/1.7 "Malgun Gothic",sans-serif;color:var(--ink)}
+.item small{display:block;color:var(--red);font-size:14px}
+.err{background:#FFE3E3;border:3px solid var(--red);color:var(--red);border-radius:12px;padding:12px 14px;margin:12px 0}
+.ok{color:var(--grn)}
+input[type=password],input[type=text]{width:100%;font:700 16px "Malgun Gothic",sans-serif;border:3px solid #777;border-radius:10px;padding:12px;margin-top:8px}
+ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
+#read{font-size:var(--fs,19px);line-height:var(--lh,2.1);word-break:keep-all;overflow-wrap:anywhere}
+#read h1{font-size:1.35em;color:var(--pur);line-height:1.6;margin:.3em 0 .6em}
+#read h2{font-size:1.15em;color:var(--blu);line-height:1.6;margin:1.2em 0 .4em}
+#read p{margin:0 0 1em}
+#read .q{color:#0A6B2A}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--dpur);display:flex;gap:6px;padding:8px 10px}
+.bar button{flex:1;background:#FFD400;color:#111;border:0;border-radius:10px;font:800 15px "Malgun Gothic",sans-serif;min-height:46px}
+.bar button:disabled{background:#999;color:#eee}
+.foot{margin-top:18px;font-size:14px}
+.foot a{color:var(--blu)}
 </style>
 </head>
 <body>
-<header><h1>전자책 원고실</h1><p>임박사의 책 집필 작업 공간</p></header>
-<main>
-<section><h2>전자책 원고 보관소</h2><p>책 원고는 비공개 저장소에 안전하게 보관합니다.</p><a href="https://github.com/limsaboo/lim-book-library">비공개 원고 저장소 열기</a></section>
-<section><h2>현재 집필 중인 책</h2><p>『우리, 왜 맨날 같은 걸로 싸울까?』</p><a href="https://github.com/limsaboo/lim-book-library/tree/main/01-우리-왜-맨날-같은-걸로-싸울까">책 폴더 열기</a></section>
-</main>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})}</script>
+<header><h1 id="ttl">전자책 원고실</h1><button id="hb" style="display:none">목록</button></header>
+<main id="app"></main>
+<div class="bar" id="bar" style="display:none">
+<button id="bPrev">◀ 이전</button><button id="bA1">글자 −</button><button id="bA2">글자 +</button><button id="bLH">줄간격</button><button id="bNext">다음 ▶</button>
+</div>
+<script>
+(function(){
+var OWNER='limsaboo',REPO='lim-book-library',BR='main';
+var $=function(i){return document.getElementById(i)};
+var app=$('app'),bar=$('bar'),hb=$('hb'),ttl=$('ttl');
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function token(){return ls('lbr_token')||''}
+var TREE=null;
+function api(path,raw){
+  var h={'X-GitHub-Api-Version':'2022-11-28','Accept':raw?'application/vnd.github.raw+json':'application/vnd.github+json'};
+  if(token())h.Authorization='Bearer '+token();
+  return fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+path,{headers:h,cache:'no-store'}).then(function(r){
+    if(!r.ok){var e=new Error('HTTP '+r.status);e.status=r.status;throw e}
+    return raw?r.text():r.json();
+  });
+}
+function errBox(e){
+  var m='불러오지 못했습니다.';
+  if(e&&e.status===401)m='토큰이 맞지 않거나 기간이 끝났습니다. 설정에서 새 토큰을 넣어 주세요.';
+  else if(e&&(e.status===403))m='권한이 없거나 요청이 너무 많습니다. 토큰 권한(Contents 읽기)을 확인해 주세요.';
+  else if(e&&e.status===404)m='저장소나 파일을 찾지 못했습니다. 토큰이 lim-book-library 저장소를 허용했는지 확인해 주세요.';
+  else if(!navigator.onLine)m='인터넷에 연결되어 있지 않습니다. 저장된 글만 볼 수 있습니다.';
+  return '<div class="err">'+m+'</div>';
+}
+/* ---------- 설정(토큰) ---------- */
+function viewSetup(msg){
+  bar.style.display='none';hb.style.display='none';ttl.textContent='전자책 원고실';
+  app.innerHTML='<div class="card"><h2>처음 한 번만 설정합니다</h2>'+
+  '<p>비공개 원고를 읽으려면 <b>읽기 전용 토큰</b>이 필요합니다. 토큰은 이 폰에만 저장되고 인터넷 주소(코드)에는 들어가지 않습니다.</p>'+
+  '<ol><li>폰 크롬에서 <b>github.com/settings/personal-access-tokens/new</b> 를 엽니다.</li>'+
+  '<li>이름: <b>원고실 읽기</b> / 만료: 90일 이상 선택</li>'+
+  '<li><b>Repository access → Only select repositories → lim-book-library</b> 하나만 선택</li>'+
+  '<li><b>Permissions → Repository permissions → Contents → Read-only</b></li>'+
+  '<li><b>Generate token</b> 후 나온 글자(github_pat_…)를 복사해서 아래에 붙여넣습니다.</li></ol>'+
+  (msg||'')+
+  '<input type="password" id="tk" placeholder="github_pat_… 붙여넣기" autocomplete="off">'+
+  '<button class="btn g" id="tkSave">저장하고 원고 불러오기</button></div>'+
+  '<div class="card"><h2>안전 안내</h2><p>이 토큰은 <b>읽기만</b> 가능해서 원고를 고치거나 지울 수 없습니다. 채팅창에는 붙여넣지 마세요.</p></div>';
+  $('tkSave').onclick=function(){
+    var v=($('tk').value||'').trim();
+    if(!/^(github_pat_|ghp_)[A-Za-z0-9_]+$/.test(v)){viewSetup('<div class="err">토큰 글자 모양이 맞지 않습니다. github_pat_ 로 시작하는 글자 전체를 붙여넣어 주세요.</div>');return}
+    ls('lbr_token',v);TREE=null;route();
+  };
+}
+/* ---------- 목록 ---------- */
+function groups(tree){
+  var g={},order=[];
+  tree.forEach(function(n){
+    if(n.type!=='blob'||!/\.md$/i.test(n.path)||/^README\.md$/i.test(n.path))return;
+    var p=n.path.split('/'),f=p.length>1?p.slice(0,-1).join('/'):'(기타)';
+    if(!g[f]){g[f]=[];order.push(f)}g[f].push(n.path);
+  });
+  order.sort();order.forEach(function(k){g[k].sort()});
+  return {g:g,order:order};
+}
+function nm(p){return p.split('/').pop().replace(/\.md$/i,'').replace(/-/g,' ')}
+function viewList(){
+  bar.style.display='none';hb.style.display='block';hb.textContent='설정';hb.onclick=function(){location.hash='#/setup'};
+  ttl.textContent='전자책 원고실';
+  var last=ls('lbr_last');
+  app.innerHTML='<div id="lst"><div class="card"><p>목록을 불러오는 중입니다…</p></div></div>';
+  function paint(tree,note){
+    var G=groups(tree),h='';
+    if(last&&tree.some(function(n){return n.path===last}))h+='<button class="btn o" id="goLast">이어 읽기 · '+esc(nm(last))+'</button>';
+    if(note)h+=note;
+    G.order.forEach(function(f){
+      h+='<div class="card"><h2>'+esc(f.replace(/^\d+-/,'').replace(/-/g,' '))+'</h2>';
+      G.g[f].forEach(function(p){h+='<button class="item" data-p="'+esc(p)+'">'+esc(nm(p).replace(/^\d+\s/,''))+'<small>'+(ls('lbr_c_'+p)?'저장됨 · 인터넷 없이도 읽기':'처음 열 때 불러옴')+'</small></button>'});
+      h+='</div>';
+    });
+    if(!G.order.length)h+='<div class="card"><p>읽을 원고(.md 파일)가 없습니다.</p></div>';
+    h+='<button class="btn g" id="rf">목록 새로 불러오기</button>';
+    h+='<div class="foot">GitHub에서 열기: <a href="https://github.com/limsaboo/lim-book-library" target="_blank" rel="noopener">원고 저장소</a></div>';
+    $('lst').innerHTML=h;
+    var gl=$('goLast');if(gl)gl.onclick=function(){location.hash='#/r/'+encodeURIComponent(last)};
+    Array.prototype.forEach.call(document.querySelectorAll('.item'),function(b){b.onclick=function(){location.hash='#/r/'+encodeURIComponent(b.getAttribute('data-p'))}});
+    $('rf').onclick=function(){TREE=null;ls('lbr_tree',null);viewList()};
+  }
+  function load(){return api('/git/trees/'+BR+'?recursive=1').then(function(d){TREE=d.tree;ls('lbr_tree',JSON.stringify(d.tree));return TREE})}
+  (TREE?Promise.resolve(TREE):load()).then(function(t){paint(t)}).catch(function(e){
+    if(e&&(e.status===401||e.status===403||e.status===404)&&e.status!==403){viewSetup(errBox(e));return}
+    var c=ls('lbr_tree');if(c){try{paint(JSON.parse(c),errBox(e));return}catch(x){}}
+    $('lst').innerHTML=errBox(e)+'<button class="btn g" onclick="location.reload()">다시 시도</button>';
+  });
+}
+/* ---------- 읽기 ---------- */
+function md(t){
+  t=t.replace(/\r\n?/g,'\n');
+  var out=[],para=[];
+  function inl(s){s=esc(s);return s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')}
+  function flush(){if(para.length){out.push('<p>'+para.map(inl).join('<br>')+'</p>');para=[]}}
+  t.split('\n').forEach(function(l){
+    var m;
+    if(!l.trim()){flush();return}
+    if((m=l.match(/^(#{1,3})\s+(.*)$/))){flush();out.push('<h'+(m[1].length>1?2:1)+'>'+inl(m[2])+'</h'+(m[1].length>1?2:1)+'>');return}
+    if((m=l.match(/^[-*]\s+(.*)$/))){flush();out.push('<p>• '+inl(m[1])+'</p>');return}
+    if(/^[“"『]/.test(l.trim())){flush();out.push('<p class="q">'+inl(l)+'</p>');return}
+    para.push(l);
+  });
+  flush();return out.join('');
+}
+function viewRead(path){
+  hb.style.display='block';hb.textContent='목록';hb.onclick=function(){location.hash='#/'};
+  bar.style.display='flex';
+  ttl.textContent=nm(path).replace(/^\d+\s/,'');
+  var fs=parseInt(ls('lbr_fs')||'19',10),lh=parseFloat(ls('lbr_lh')||'2.1');
+  function apply(){document.documentElement.style.setProperty('--fs',fs+'px');document.documentElement.style.setProperty('--lh',lh)}
+  apply();
+  app.innerHTML='<div class="card" id="read"><p>불러오는 중입니다…</p></div>';
+  var cached=ls('lbr_c_'+path);
+  function show(text,note){
+    var first=text.split('\n').find(function(x){return x.trim()});
+    $('read').innerHTML=(note||'')+md(text);
+    ls('lbr_last',path);
+    var pos=parseInt(ls('lbr_pos_'+path)||'0',10);
+    setTimeout(function(){window.scrollTo(0,pos)},50);
+  }
+  (function(){
+    var t0=function(){return TREE?Promise.resolve(TREE):(ls('lbr_tree')?Promise.resolve(JSON.parse(ls('lbr_tree'))):api('/git/trees/'+BR+'?recursive=1').then(function(d){TREE=d.tree;return TREE}))};
+    t0().then(function(tr){
+      var G=groups(tr),f=path.split('/').slice(0,-1).join('/')||'(기타)',arr=G.g[f]||[],i=arr.indexOf(path);
+      $('bPrev').disabled=i<=0;$('bNext').disabled=i<0||i>=arr.length-1;
+      $('bPrev').onclick=function(){location.hash='#/r/'+encodeURIComponent(arr[i-1])};
+      $('bNext').onclick=function(){location.hash='#/r/'+encodeURIComponent(arr[i+1])};
+    }).catch(function(){$('bPrev').disabled=true;$('bNext').disabled=true});
+  })();
+  $('bA1').onclick=function(){fs=Math.max(15,fs-2);ls('lbr_fs',String(fs));apply()};
+  $('bA2').onclick=function(){fs=Math.min(34,fs+2);ls('lbr_fs',String(fs));apply()};
+  $('bLH').onclick=function(){lh=lh>=2.6?1.7:Math.round((lh+0.3)*10)/10;ls('lbr_lh',String(lh));apply()};
+  api('/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+BR,true).then(function(t){
+    ls('lbr_c_'+path,t);show(t);
+  }).catch(function(e){
+    if(cached)show(cached,'<div class="err" style="margin-top:0">최신 글을 불러오지 못해 <b>저장된 글</b>을 보여 줍니다.</div>');
+    else $('read').innerHTML=errBox(e);
+  });
+}
+window.addEventListener('scroll',function(){
+  var m=location.hash.match(/^#\/r\/(.+)$/);if(m){ls('lbr_pos_'+decodeURIComponent(m[1]),String(Math.round(window.scrollY)))}
+},{passive:true});
+function route(){
+  var h=location.hash||'#/',m;
+  if(h==='#/setup'){viewSetup();return}
+  if(!token()){viewSetup();return}
+  if((m=h.match(/^#\/r\/(.+)$/))){viewRead(decodeURIComponent(m[1]));return}
+  viewList();
+}
+window.addEventListener('hashchange',function(){window.scrollTo(0,0);route()});
+route();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})}
+})();
+</script>
 </body>
 </html>
