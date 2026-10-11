@@ -167,6 +167,7 @@ function viewRead(path){
   if(cached)setTitle(cached);
   function show(text,note){
     setTitle(text);
+    if(!text||!text.trim()){$('read').innerHTML='<p><b>이 파일은 아직 비어 있습니다.</b> 원고가 올라오면 여기에 나타납니다.</p>';return}
     $('read').innerHTML=(note||'')+md(text);
     ls('lbr_last',path);
     var pos=parseInt(ls('lbr_pos_'+path)||'0',10);
