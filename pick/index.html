@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>대표 그림 30장 고르기</title>
+<style>
+:root{--ink:#111;--pur:#7B1FE0;--red:#E00000;--grn:#00A33B;--bg:#FFFBEA}
+*{box-sizing:border-box}
+body{word-break:keep-all;margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.9 "Malgun Gothic","Noto Sans KR",sans-serif;padding:0 16px 110px}
+header{margin:0 -16px 14px;background:var(--pur);color:#fff;padding:14px 16px}
+h1{margin:0;font-size:22px;line-height:1.6}
+header p{margin:4px 0 0;font-size:16px;line-height:1.8;color:#FFF200}
+.rule{background:#fff;border:3px solid var(--pur);border-radius:14px;padding:12px 14px;margin:0 0 16px;font-size:16px;line-height:1.9}
+.rule b{color:var(--red)}
+.ax{margin:0 0 22px}
+.ax h2{margin:0 0 4px;font-size:21px;line-height:1.6;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ax h2 .n{font-size:17px;padding:0 12px;border-radius:999px;color:#fff;background:var(--grn);white-space:nowrap}
+.ax h2 .n.bad{background:var(--red)}
+.ax .d{margin:0 0 8px;font-size:15px;line-height:1.8;color:#333}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.c{position:relative;background:#fff;border:4px solid #bbb;border-radius:12px;overflow:hidden;padding:0;text-align:left;font:inherit;cursor:pointer}
+.c img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover}
+.c .lb{display:block;padding:2px 6px;font-size:14px;line-height:1.7;color:#111;background:#fff}
+.c.on{border-color:var(--ac)}
+.c.on .lb{background:var(--ac);color:#fff}
+.c .ck{position:absolute;top:4px;left:4px;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid #999;color:#fff;font-size:18px;line-height:22px;text-align:center}
+.c.on .ck{background:var(--ac);border-color:#fff}
+.c .rc{position:absolute;top:4px;right:4px;background:#FFF200;color:#111;font-size:12px;line-height:1.6;padding:0 6px;border-radius:8px}
+.zm{position:absolute;right:4px;bottom:32px;width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.65);color:#fff;font-size:16px;line-height:1;padding:0}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--pur);padding:10px 12px;display:flex;gap:8px}
+.bar button{flex:1 1 0;min-width:0;white-space:nowrap;font:800 16px "Malgun Gothic",sans-serif;border:0;border-radius:12px;color:#fff;padding:12px 6px;min-height:50px}
+.b1{background:var(--grn)}.b2{background:#E65100}.b3{background:#111;color:#FFF200}
+#tot{flex:0 0 auto;color:#FFF200;font-weight:800;font-size:17px;align-self:center;padding:0 4px}
+dialog{border:4px solid var(--pur);border-radius:16px;padding:12px;width:min(92vw,420px);background:#fff}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+dialog img{width:100%;display:block;border-radius:10px}
+dialog p{margin:8px 0 0;font-size:17px;line-height:1.9}
+dialog .row{display:flex;gap:8px;margin-top:8px}
+dialog button{flex:1;font:800 16px "Malgun Gothic",sans-serif;border:0;border-radius:12px;color:#fff;padding:12px;min-height:48px}
+textarea{width:100%;min-height:200px;font:700 15px/1.8 "Malgun Gothic",sans-serif;border:2px solid #999;border-radius:10px;padding:10px;color:#111}
+</style></head><body>
+<header><h1>대표 그림 30장 고르기</h1>
+<p>영역마다 6장씩 · 전체 78장 중 30장</p></header>
+<div class="rule"><b>사용법</b> 그림을 누르면 선택·해제됩니다. 노란 <b>추천</b> 표시는 클박사가 고른 후보입니다. 돋보기 버튼을 누르면 크게 보고 추천 이유를 읽을 수 있습니다. 다 고르면 아래 <b>결과 복사</b>를 눌러 클박사에게 붙여 넣어 주세요.<br>
+<b>제외 기준</b> 너무 어둡거나 종교·신비 상징이 있는 카드는 일반 독자용 책에 부담이 될 수 있어 추천에서 뺐습니다. 필요하면 직접 선택해도 됩니다.</div>
+<div id="root"></div>
+<div class="bar"><span id="tot">0/30</span><button class="b1" id="cp">결과 복사</button><button class="b2" id="rs">추천으로</button></div>
+<dialog id="dg"><img id="dgi" alt=""><p id="dgt"></p><div class="row"><button id="dgs" style="background:#00A33B">선택/해제</button><button id="dgc" style="background:#111">닫기</button></div></dialog>
+<dialog id="rd"><p><b>복사가 안 되면 아래 글을 길게 눌러 전체 선택 후 복사하세요.</b></p><textarea id="rt" readonly></textarea><div class="row"><button id="rdc" style="background:#111">닫기</button></div></dialog>
+<script>
+var AX=[
+{k:'P',n:'사고·계획',n2:'계획 세우기·판단·순서',c:'#0033CC',m:16},
+{k:'E',n:'감정·공감',n2:'마음을 읽고 나누기',c:'#E00000',m:15},
+{k:'R',n:'보상·도전',n2:'새로움·성취·도전',c:'#E65100',m:16},
+{k:'H',n:'습관·안정',n2:'익숙함·루틴·오래 지킴',c:'#007A33',m:15},
+{k:'D',n:'상상·창의',n2:'상상하기·새로운 연결',c:'#6A1B9A',m:16}];
+var REC={
+P0:'체크리스트: 계획을 세우고 할 일을 정리하는 모습',
+P1:'나침반: 방향을 정하고 길을 찾는 모습',
+P3:'계단: 한 걸음씩 단계를 밟아 가는 모습',
+P6:'설계도: 미리 그려 두는 계획',
+P7:'직소퍼즐: 두 사람이 함께 조각을 맞추는 이야기로 쓰기 좋음',
+P8:'도미노: 작은 한 가지가 다음으로 이어지는 모습. 1장 "말 한마디가 싸움으로 번진다"와 연결',
+E1:'두 개의 하트: 두 사람의 마음',
+E6:'맞잡은 손: 위로와 공감. 1장 7절의 "손을 내미는 그림" 대체 후보',
+E8:'두 잔의 차: 마주 앉은 대화. 3장 6절의 "창문 있는 방" 대체 후보',
+E9:'나란히 앉은 두 마리 새: 곁에 있는 존재',
+E10:'함께 잠든 강아지와 고양이: 서로 다른 둘이 함께 있는 모습',
+E11:'우산과 장화: 같은 비를 보는 서로 다른 느낌',
+R0:'로켓: 도전의 출발',
+R3:'폭풍 속의 배: 위기를 견디는 모습',
+R6:'정상의 깃발: 목표를 이룬 순간',
+R9:'열기구: 새로운 시도와 설렘',
+R10:'트로피: 성취와 보상',
+R11:'출발선의 러닝화: 시작하기',
+H0:'닻: 붙잡아 주는 안정',
+H6:'고요한 정원: 반복되는 루틴의 평온',
+H7:'찻상: 매일 이어지는 작은 의식',
+H8:'큰 나무: 오래 지켜 온 뿌리',
+H10:'아침 식탁: 익숙한 일상',
+H11:'오리 가족: 함께하는 일상',
+D0:'전구: 새로운 생각이 떠오르는 순간',
+D6:'떠 있는 섬: 상상 속 세계',
+D7:'마법 책: 이야기가 피어나는 상상',
+D9:'종이배와 은하: 꿈꾸는 여정',
+D10:'오로라가 보이는 문: 다른 세계로 열린 문',
+D11:'비눗방울 속 지구: 호기심'};
+var KEY='pick30_v1',SEL={};
+function ld(){try{var v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&typeof v==='object')return v}catch(e){}return null}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(SEL))}catch(e){}}
+function reset(){SEL={};Object.keys(REC).forEach(function(k){SEL[k]=1})}
+SEL=ld()||(reset(),SEL);
+function cnt(a){var n=0;for(var i=0;i<a.m;i++)if(SEL[a.k+i])n++;return n}
+function draw(){
+ var h='',tot=0;
+ AX.forEach(function(a){
+  var n=cnt(a);tot+=n;
+  h+='<section class="ax" style="--ac:'+a.c+'"><h2 style="color:'+a.c+'">'+a.n+'<span class="n'+(n===6?'':' bad')+'">'+n+' / 6장</span></h2><p class="d">'+a.n2+' · 전체 '+a.m+'장</p><div class="grid">';
+  for(var i=0;i<a.m;i++){
+   var id=a.k+i,on=!!SEL[id];
+   h+='<div class="c'+(on?' on':'')+'" data-id="'+id+'" role="button" tabindex="0"><img loading="lazy" src="img/'+id+'.webp" alt="'+a.n+' '+(i+1)+'번"><span class="ck">'+(on?'✓':'')+'</span>'+(REC[id]?'<span class="rc">추천</span>':'')+'<button class="zm" data-z="'+id+'" aria-label="크게 보기">🔍</button><span class="lb">'+a.n+' '+(i+1)+'번</span></div>';
+  }
+  h+='</div></section>';
+ });
+ document.getElementById('root').innerHTML=h;
+ var t=document.getElementById('tot');t.textContent=tot+'/30';t.style.color=tot===30?'#7CFF9B':'#FFF200';
+}
+var cur=null;
+function open_(id){cur=id;var a=AX.filter(function(x){return x.k===id.charAt(0)})[0],i=parseInt(id.slice(1),10);
+ document.getElementById('dgi').src='img/'+id+'.webp';
+ document.getElementById('dgt').innerHTML='<b style="color:'+a.c+'">'+a.n+' '+(i+1)+'번</b> ('+id+')<br>'+(REC[id]?'<b>추천 이유</b> '+REC[id]:'클박사 추천 목록에 없는 그림입니다.')+'<br><b>지금 상태: '+(SEL[id]?'선택됨':'선택 안 됨')+'</b>';
+ var d=document.getElementById('dg');d.showModal?d.showModal():d.setAttribute('open','')}
+document.getElementById('root').addEventListener('click',function(e){
+ var z=e.target.closest('[data-z]');if(z){e.stopPropagation();open_(z.dataset.z);return}
+ var c=e.target.closest('.c');if(!c)return;var id=c.dataset.id;
+ if(SEL[id])delete SEL[id];else SEL[id]=1;sv();var y=window.scrollY;draw();window.scrollTo(0,y)});
+document.getElementById('dgs').onclick=function(){if(SEL[cur])delete SEL[cur];else SEL[cur]=1;sv();var y=window.scrollY;draw();window.scrollTo(0,y);open_(cur)};
+document.getElementById('dgc').onclick=function(){var d=document.getElementById('dg');d.close?d.close():d.removeAttribute('open')};
+document.getElementById('rdc').onclick=function(){var d=document.getElementById('rd');d.close?d.close():d.removeAttribute('open')};
+document.getElementById('rs').onclick=function(){if(confirm('클박사 추천으로 되돌릴까요?')){reset();sv();draw()}};
+function result(){
+ var L=['대표 그림 30장 선정 결과'],tot=0,warn=[];
+ AX.forEach(function(a){var ids=[];for(var i=0;i<a.m;i++)if(SEL[a.k+i])ids.push(a.k+i+'('+a.n+' '+(i+1)+'번)');tot+=ids.length;
+  L.push(a.n+' '+ids.length+'장: '+ids.join(', '));if(ids.length!==6)warn.push(a.n+' '+ids.length+'장')});
+ L.push('합계 '+tot+'장');if(warn.length)L.push('주의: 영역별 6장이 아닌 곳 - '+warn.join(', '));
+ return L.join('\n')}
+document.getElementById('cp').onclick=async function(){
+ var t=result();
+ try{await navigator.clipboard.writeText(t);alert('복사되었습니다. 클박사에게 붙여 넣어 주세요.')}
+ catch(e){var r=document.getElementById('rt');r.value=t;var d=document.getElementById('rd');d.showModal?d.showModal():d.setAttribute('open','');r.focus();r.select()}};
+draw();
+</script></body></html>
