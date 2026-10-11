@@ -160,8 +160,13 @@ function viewRead(path){
   apply();
   app.innerHTML='<div class="card" id="read"><p>불러오는 중입니다…</p></div>';
   var cached=ls('lbr_c_'+path);
+  function setTitle(text){
+    var first=(text||'').split('\n').find(function(x){return x.trim()});
+    if(first){first=first.replace(/^#+\s*/,'').replace(/\*\*/g,'').trim();if(first&&first.length<=80)ttl.textContent=first}
+  }
+  if(cached)setTitle(cached);
   function show(text,note){
-    var first=text.split('\n').find(function(x){return x.trim()});
+    setTitle(text);
     $('read').innerHTML=(note||'')+md(text);
     ls('lbr_last',path);
     var pos=parseInt(ls('lbr_pos_'+path)||'0',10);
