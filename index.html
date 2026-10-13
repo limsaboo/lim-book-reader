@@ -51,6 +51,7 @@ ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
 #read th{background:#FFD400}
 #read th:first-child,#read td:first-child{white-space:nowrap}
 #read .cta{display:block;text-decoration:none;color:#111;border-radius:14px;overflow:hidden;box-shadow:0 0 0 4px #FFD400;margin:14px 0}
+#read .ctabtn{display:block;text-align:center;text-decoration:none;background:#E60012;color:#fff;font-weight:900;font-size:1.15em;line-height:1.5;padding:16px 12px;border-radius:14px;box-shadow:0 0 0 4px #FFD400;margin:14px 0}
 #read .cta img{border-radius:0;margin:0}
 #read .cta span{display:block;background:#FFD400;color:#111;font-weight:900;font-size:1.05em;line-height:1.6;padding:14px 12px;text-align:center}
 </style>
@@ -82,6 +83,13 @@ var APP_URL='https://limsaboo.github.io/brain-match/';
 function ctaWrap(im){
   try{
     var r=im.naturalHeight/im.naturalWidth;
+    if(!im.getAttribute('data-cta')&&/보고서/.test(im.alt||'')&&r>1.6&&r<3){
+      im.setAttribute('data-cta','1');
+      var p0=im.parentNode,b=document.createElement('a');b.className='ctabtn';b.href=APP_URL;b.target='_blank';b.rel='noopener';
+      b.textContent='👉 무료 뇌궁합 맞춰보기';
+      if(p0&&p0.parentNode)p0.parentNode.insertBefore(b,p0.nextSibling);
+      return;
+    }
     if(im.getAttribute('data-cta')||!/결과 보고서/.test(im.alt||'')||Math.abs(r-684/772)>0.03)return;
     var p=im.parentNode;if(!p||p.tagName==='A'||(p.parentNode&&p.parentNode.className==='cta'))return;
     im.setAttribute('data-cta','1');
