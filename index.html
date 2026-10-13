@@ -19,7 +19,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.9 "Malgun Go
 header{background:var(--dpur);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px}
 header h1{font-size:20px;margin:0;line-height:1.5;flex:1}
 header button{background:#FFD400;color:#111;border:0;border-radius:10px;font:800 15px "Malgun Gothic",sans-serif;padding:10px 12px;min-height:44px}
-main{max-width:720px;margin:0 auto;padding:14px 16px 90px}
+main{max-width:720px;margin:0 auto;padding:14px 16px calc(130px + env(safe-area-inset-bottom,0px))}
 .card{background:#fff;border:3px solid var(--pur);border-radius:14px;padding:16px;margin:0 0 16px}
 .card h2{margin:0 0 8px;font-size:19px;line-height:1.6;color:var(--blu)}
 .card p{margin:6px 0}
@@ -36,7 +36,7 @@ ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
 #read h2{font-size:1.15em;color:var(--blu);line-height:1.6;margin:1.2em 0 .4em}
 #read p{margin:0 0 1em}
 #read .q{color:#0A6B2A}
-.bar{position:fixed;left:0;right:0;bottom:0;background:var(--dpur);display:flex;gap:6px;padding:8px 10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--dpur);display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))}
 .bar button{flex:1 1 0;min-width:0;white-space:nowrap;background:#FFD400;color:#111;border:0;border-radius:10px;font:800 14px "Malgun Gothic",sans-serif;min-height:46px;padding:0 2px}
 .bar button:disabled{background:#999;color:#eee}
 .foot{margin-top:18px;font-size:14px}
@@ -45,11 +45,11 @@ ol{padding-left:22px;margin:6px 0}li{margin:6px 0}
 #read blockquote{margin:0 0 1em;padding:12px 14px;background:#FFF1B8;border-left:8px solid var(--red);border-radius:10px;font-weight:800}
 #read .fine{font-size:12px;line-height:1.6;color:#666;font-weight:600;margin:1.6em 0 0}
 #read hr{border:0;border-top:3px solid var(--pur);margin:1.6em 0}
-#read .tw{overflow-x:auto;margin:0 0 1em}
-#read table{width:100%;border-collapse:collapse;font-size:.88em;line-height:1.7}
-#read th,#read td{border:2px solid var(--ink);padding:8px 8px;text-align:left;vertical-align:top;word-break:keep-all}
+#read .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 1em}
+#read table{width:100%;border-collapse:collapse;table-layout:auto;font-size:.88em;line-height:1.7}
+#read th,#read td{border:2px solid var(--ink);padding:8px 8px;text-align:left;vertical-align:top;writing-mode:horizontal-tb;white-space:normal;word-break:keep-all;overflow-wrap:break-word;min-width:3em;height:auto}
 #read th{background:#FFD400}
-#read th:first-child,#read td:first-child{white-space:nowrap}
+@media (max-width:480px){#read th,#read td{padding:7px 5px}}
 #read .cta{display:block;text-decoration:none;color:#111;border-radius:14px;overflow:hidden;box-shadow:0 0 0 4px #FFD400;margin:14px 0}
 #read .ctabtn{display:block;text-align:center;text-decoration:none;background:#E60012;color:#fff;font-weight:900;font-size:1.15em;line-height:1.5;padding:16px 12px;border-radius:14px;box-shadow:0 0 0 4px #FFD400;margin:14px 0}
 #read .cta img{border-radius:0;margin:0}
