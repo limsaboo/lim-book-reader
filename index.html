@@ -209,6 +209,7 @@ function md(t){
     if((m=l.match(/^::\s?(.*)$/))){flush();out.push('<p class="fine">'+inl(m[1])+'</p>');return}
     flushB();flushT();
     if((m=l.match(/^(#{1,3})\s+(.*)$/))){flushP();out.push('<h'+(m[1].length>1?2:1)+'>'+inl(m[2])+'</h'+(m[1].length>1?2:1)+'>');return}
+    if((m=l.match(/^\[\[버튼\|([^|\]]+)\|(https?:\/\/[^\]\s]+)\]\]\s*$/))){flushP();out.push('<a class="ctabtn" href="'+esc(m[2])+'" target="_blank" rel="noopener">'+esc(m[1])+'</a>');return}
     if((m=l.match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/))){flushP();out.push('<p class="im"><img data-src="'+esc(m[2])+'" alt="'+esc(m[1])+'"></p>');return}
     if((m=l.match(/^[-*]\s+(.*)$/))){flushP();out.push('<p>• '+inl(m[1])+'</p>');return}
     if(/^[“"『]/.test(l.trim())){flushP();out.push('<p class="q">'+inl(l)+'</p>');return}
