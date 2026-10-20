@@ -187,6 +187,7 @@ function viewList(){
     var G=groups(tree),h='';
     if(last&&tree.some(function(n){return n.path===last}))h+='<button class="btn o" id="goLast">이어 읽기 · '+esc(nm(last))+'</button>';
     if(note)h+=note;
+    h+='<a href="studio/" style="display:block;text-align:center;text-decoration:none;background:#E60012;color:#fff;font-weight:900;font-size:1.1em;line-height:1.6;padding:14px;border-radius:14px;border:3px solid #111;margin:0 0 16px">🎬 임박사 영화제작소 열기</a>';
     G.order.forEach(function(f){
       h+='<div class="card"><h2>'+esc(f.replace(/^\d+-/,'').replace(/-/g,' '))+'</h2>';
       G.g[f].forEach(function(p){h+='<button class="item" data-p="'+esc(p)+'">'+esc(nm(p).replace(/^\d+\s/,''))+'<small>'+(ls('lbr_c_'+p)?'저장됨 · 인터넷 없이도 읽기':'처음 열 때 불러옴')+'</small></button>'});
