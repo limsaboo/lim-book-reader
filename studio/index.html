@@ -68,8 +68,22 @@ let DATA=null,PILOTS=[],BANNER='';
 const OWNER='limsaboo',REPO='kbm-shorts',BR='main',BASE='영화제작소/';
 function ls0(k,v){try{if(v===undefined)return localStorage.getItem(k)||'';if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return ''}}
 function tk(){return ls0('st_token')||ls0('lbr_token')}
-function gh(path){return fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+BASE.split('/').filter(Boolean).concat(path.split('/')).map(encodeURIComponent).join('/')+'?ref='+BR,{headers:{'Accept':'application/vnd.github.raw+json','X-GitHub-Api-Version':'2022-11-28','Authorization':'Bearer '+tk()},cache:'no-store'}).then(r=>{if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;throw e}return r})}
-function errMsg(e){if(e&&e.status===401)return '토큰이 맞지 않거나 기간이 끝났습니다. 새 토큰을 넣어 주세요.';if(e&&e.status===403)return '권한이 없거나 요청이 너무 많습니다. 토큰 권한(Contents 읽기)을 확인해 주세요.';if(e&&e.status===404)return '파일을 찾지 못했습니다. 토큰이 kbm-shorts 저장소를 허용했는지 확인해 주세요.';return navigator.onLine?'불러오지 못했습니다.':'인터넷에 연결되어 있지 않습니다.'}
+function tokens(){const a=[ls0('st_token'),ls0('lbr_token')].filter(Boolean);return a.filter((x,i)=>a.indexOf(x)===i)}
+async function gh(path){
+ const url='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+BASE.split('/').filter(Boolean).concat(path.split('/')).map(encodeURIComponent).join('/')+'?ref='+BR;
+ const ts=tokens();let last=null;
+ if(!ts.length){const e=new Error('HTTP 401');e.status=401;throw e}
+ for(const t of ts){
+  try{
+   const r=await fetch(url,{headers:{'Accept':'application/vnd.github.raw+json','X-GitHub-Api-Version':'2022-11-28','Authorization':'Bearer '+t},cache:'no-store'});
+   if(r.ok){if(t!==ls0('st_token'))ls0('st_token',t);return r}
+   const e=new Error('HTTP '+r.status);e.status=r.status;last=e;
+   if(![401,403,404].includes(r.status))throw e;
+  }catch(e){if(e&&e.status)last=e;else{last=e;break}}
+ }
+ throw last;
+}
+function errMsg(e){if(e&&e.status===401)return '토큰이 맞지 않거나 기간이 끝났습니다. 원고실 토큰도 시도했지만 실패했습니다. 새 토큰을 넣어 주세요.';if(e&&e.status===403)return '권한이 없거나 요청이 너무 많습니다. 토큰 권한(Contents 읽기)을 확인해 주세요.';if(e&&e.status===404)return '파일을 찾지 못했습니다. 토큰이 kbm-shorts 저장소를 허용했는지 확인해 주세요.';return navigator.onLine?'불러오지 못했습니다.':'인터넷에 연결되어 있지 않습니다.'}
 const HUB={'부부':'#E50914','연인':'#FF1F7A','부모자녀':'#0057FF','직장':'#7A1FE0','친구':'#FF7A00','이웃':'#00A650','룸셰어':'#B8860B'};
 const COL={sky:'#0A8CFF',pink:'#FF1F7A',purple:'#7A1FE0',lime:'#6BC400'};
 const AX=['사고·계획','감정·공감','보상·도전','습관·안정','상상·창의'];
@@ -171,7 +185,7 @@ async function boot(){
  if(!tk()){setupView();return}
  try{const r=await gh('data/episodes.json');DATA=JSON.parse(await r.text());BANNER='';try{localStorage.setItem('st_cache',JSON.stringify(DATA))}catch(e){}}
  catch(e){let c='';try{c=localStorage.getItem('st_cache')||''}catch(x){}
-  if(c){DATA=JSON.parse(c);BANNER='⚠ '+errMsg(e)+' 저장된 목록을 보여 드립니다.'}else{if(e&&(e.status===401||e.status===403||e.status===404)){setupView('<div class="warn">'+errMsg(e)+'</div>')}else{document.getElementById('v').innerHTML='<div class="warn">'+errMsg(e)+'</div>'}return}}
+  if(c){DATA=JSON.parse(c);BANNER='⚠ '+errMsg(e)+' 저장된 목록을 보여 드립니다.<br><button class="btn k" data-resettk style="margin-top:10px">🔑 토큰 새로 넣기</button>'}else{if(e&&(e.status===401||e.status===403||e.status===404)){setupView('<div class="warn">'+errMsg(e)+'</div>')}else{document.getElementById('v').innerHTML='<div class="warn">'+errMsg(e)+'</div>'}return}}
  PILOTS=DATA.pilots||[];render()}
 let tab='hall',cur=null;
 function render(){
