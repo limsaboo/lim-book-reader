@@ -201,7 +201,7 @@ document.addEventListener('click',ev=>{
  else if('back' in t.dataset){cur=null;render()}
  else if(t.dataset.set){const [id,i]=t.dataset.set.split(':');const s=store.status();s[id]=+i;mem.status=s;S('st_status',s);const y=scrollY;render();scrollTo(0,y)}
  else if(t.dataset.save){const id=t.dataset.save;const p=store.perf();p[id]={date:$('#p_date').value,views:$('#p_views').value,watch:$('#p_watch').value,click:$('#p_click').value,memo:$('#p_memo').value};mem.perf=p;const ok=S('st_perf',p);t.textContent=ok?'✅ 저장됨':'⚠ 이 화면에서만 임시 저장'}
- else if('resettk' in t.dataset){ls0('st_token',null);DATA=null;boot()}
+ else if('resettk' in t.dataset){ls0('st_token',null);DATA=null;setupView('')}
  else if('addnote' in t.dataset){const v=$('#n_txt').value.trim();if(!v)return;const n=store.notes();n.unshift({cat:$('#n_cat').value,text:v});S('st_notes',n);render()}
  else if(t.dataset.del!==undefined){const n=store.notes();n.splice(+t.dataset.del,1);S('st_notes',n);render()}
 });
